@@ -153,7 +153,7 @@ class SVGAParser(context: Context?) {
             return null
         }
         LogUtils.info(TAG, "================ decode from url ================")
-        val cacheKey = SVGACache.buildCacheKey(url);
+        val cacheKey = SVGACache.buildCacheKey(url)
         return if (SVGACache.isCached(cacheKey)) {
             LogUtils.info(TAG, "this url cached")
             threadPoolExecutor.execute {
@@ -387,6 +387,9 @@ class SVGAParser(context: Context?) {
         }
         try {
             val cacheDir = SVGACache.buildCacheDir(cacheKey)
+
+            //todo:从缓存目录取出的文件，应该是加密后的文件，此处进行一次解密过程
+
             File(cacheDir, "movie.binary").takeIf { it.isFile }?.let { binaryFile ->
                 try {
                     LogUtils.info(TAG, "binary change to entity")
