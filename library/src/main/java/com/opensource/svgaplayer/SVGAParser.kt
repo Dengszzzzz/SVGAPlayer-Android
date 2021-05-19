@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.http.HttpResponseCache
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import com.opensource.svgaplayer.utils.AES
 import com.opensource.svgaplayer.proto.MovieEntity
 import com.opensource.svgaplayer.utils.log.LogUtils
 import org.json.JSONObject
@@ -189,7 +189,11 @@ class SVGAParser(context: Context?) {
                 try {
                     readAsBytes(inputStream)?.let { bytes ->
                         LogUtils.info(TAG, "cache.inflate start")
-                        inflate(bytes)?.let { inflateBytes ->
+
+                        //todo：和源码的区别--对bytes解密
+                        val byteAes = AES.decrypt(bytes)
+
+                        inflate(byteAes)?.let { inflateBytes ->
                             LogUtils.info(TAG, "cache.inflate success")
                             val videoItem = SVGAVideoEntity(
                                     MovieEntity.ADAPTER.decode(inflateBytes),
@@ -240,7 +244,13 @@ class SVGAParser(context: Context?) {
                         SVGACache.buildSvgaFile(cacheKey).let { cacheFile ->
                             try {
                                 cacheFile.takeIf { !it.exists() }?.createNewFile()
-                                FileOutputStream(cacheFile).write(bytes)
+
+                                //todo：和源码的区别--对bytes加密
+                                val byteAes = AES.encrypt(bytes)
+
+                                FileOutputStream(cacheFile).write(byteAes)
+                                //FileOutputStream(cacheFile).write(bytes)
+
                             } catch (e: Exception) {
                                 LogUtils.error(TAG, "create cache file fail.", e)
                                 cacheFile.delete()
@@ -387,9 +397,6 @@ class SVGAParser(context: Context?) {
         }
         try {
             val cacheDir = SVGACache.buildCacheDir(cacheKey)
-
-            //todo:从缓存目录取出的文件，应该是加密后的文件，此处进行一次解密过程
-
             File(cacheDir, "movie.binary").takeIf { it.isFile }?.let { binaryFile ->
                 try {
                     LogUtils.info(TAG, "binary change to entity")

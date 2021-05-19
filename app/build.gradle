@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.example.ponycui_home.svgaplayer"
         minSdkVersion 14
@@ -33,4 +32,7 @@ dependencies {
     implementation project(':library')
     implementation 'com.squareup.okhttp3:okhttp:3.4.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation "com.android.support:recyclerview-v7:28+"
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34"
 }

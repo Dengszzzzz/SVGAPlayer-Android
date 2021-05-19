@@ -14,7 +14,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.opensource.svgaplayer.SVGACache;
 import com.opensource.svgaplayer.SVGAParser;
+import com.opensource.svgaplayer.utils.AES;
 import com.opensource.svgaplayer.utils.log.SVGALogger;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         this.items.add(new SampleItem("Animation From Layout XML", new Intent(this, AnimationFromLayoutActivity.class)));
         this.items.add(new SampleItem("Animation With Dynamic Image", new Intent(this, AnimationWithDynamicImageActivity.class)));
         this.items.add(new SampleItem("Animation With Dynamic Click", new Intent(this, AnimationFromClickActivity.class)));
+        this.items.add(new SampleItem("测试",new Intent(this,TestActivity.class)));
     }
 
     void setupListView() {
@@ -133,7 +136,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void setupSVGAParser() {
+        AES.init(AES.DEFAULT_PWD);
+        SVGACache.INSTANCE.onCreate(getApplicationContext(), SVGACache.Type.FILE);
         SVGAParser.Companion.shareParser().init(this);
+
     }
 
     private void setupLogger() {
